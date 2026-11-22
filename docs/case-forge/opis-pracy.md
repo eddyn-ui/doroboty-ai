@@ -1,6 +1,6 @@
 # Case Forge: „Od kogo zacząć?” — prototyp dla pracodawcy w DoRoboty.ai
 
-**Data:** 2026-11-22 · **Kod:** github.com/eddyn-ui/doroboty-ai, gałąź `prototyp-od-kogo-zaczac` · **Ekran:** `/#/app/kandydaci/przeglad`
+**Data:** 2026-11-22 · **Kod:** github.com/eddyn-ui/doroboty-ai (gałąź `main`) · **Ekran:** `/#/app/kandydaci/przeglad`
 
 ---
 
