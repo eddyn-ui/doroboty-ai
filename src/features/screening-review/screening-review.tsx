@@ -17,6 +17,7 @@ import {
 } from "./data";
 import {
   REQUIRED_PICKS,
+  appendAttempt,
   browserStorage,
   clearAttempts,
   questionSourceFor,
@@ -25,7 +26,6 @@ import {
   startModeFor,
   summarize,
   validatePicks,
-  writeAttempts,
   type Attempt,
 } from "./session";
 
@@ -111,8 +111,7 @@ export function ScreeningReview() {
         source: questionSourceFor(pick.question, pick.suggestion),
       })),
     };
-    const next = [...attempts, attempt];
-    const stored = writeAttempts(storage, next);
+    const { attempts: next, stored } = appendAttempt(storage, attempts, attempt);
     setAttempts(next);
     setPicks((value) => ({ ...value, [mode]: {} }));
     setOrder((value) => ({ ...value, [mode]: [] }));
@@ -131,8 +130,11 @@ export function ScreeningReview() {
     const link = document.createElement("a");
     link.href = url;
     link.download = "doroboty-przeglad-aplikacji.json";
+    document.body.append(link);
     link.click();
-    URL.revokeObjectURL(url);
+    link.remove();
+    // Revoking synchronously can cancel the download in Safari and Firefox.
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   return (

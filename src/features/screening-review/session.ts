@@ -60,6 +60,22 @@ export function writeAttempts(storage: ReviewStorage | null, attempts: Attempt[]
   }
 }
 
+/**
+ * Append to the attempts currently in storage, not to a list held in memory,
+ * so a second open tab cannot overwrite attempts saved elsewhere.
+ * Falls back to the in-memory list when storage is blocked.
+ */
+export function appendAttempt(
+  storage: ReviewStorage | null,
+  inMemory: Attempt[],
+  attempt: Attempt,
+): { attempts: Attempt[]; stored: boolean } {
+  const base = storage ? readAttempts(storage) : inMemory;
+  const known = new Set(base.map((item) => item.savedAt));
+  const merged = [...base, ...inMemory.filter((item) => !known.has(item.savedAt)), attempt];
+  return { attempts: merged, stored: writeAttempts(storage, merged) };
+}
+
 export function clearAttempts(storage: ReviewStorage | null) {
   try {
     storage?.removeItem(REVIEW_STORAGE_KEY);

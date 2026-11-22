@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { reviewApplications, reviewOrder } from "./data";
 import {
+  appendAttempt,
   questionSourceFor,
   readAttempts,
   startModeFor,
@@ -72,6 +73,23 @@ describe("screening review session", () => {
   it("summarizes suggestion use and time", () => {
     expect(summarize(attempt)).toEqual({ letters: "D, F, H", used: 2, minutes: 2, seconds: 5 });
   });
+  it("keeps attempts saved by another tab", () => {
+    const storage = memoryStorage();
+    const staleTabList: Attempt[] = [];
+    writeAttempts(storage, [{ ...attempt, participant: 2, savedAt: "2026-11-22T09:00:00.000Z" }]);
+    const result = appendAttempt(storage, staleTabList, attempt);
+    expect(result.stored).toBe(true);
+    expect(readAttempts(storage).map((item) => item.participant)).toEqual([2, 1]);
+    expect(result.attempts).toHaveLength(2);
+  });
+
+  it("keeps the in-memory list when storage is blocked", () => {
+    const earlier = { ...attempt, savedAt: "2026-11-22T09:00:00.000Z" };
+    const result = appendAttempt(null, [earlier], attempt);
+    expect(result.stored).toBe(false);
+    expect(result.attempts).toEqual([earlier, attempt]);
+  });
+
   it("alternates the starting mode by participant", () => {
     expect(startModeFor(1)).toBe("a");
     expect(startModeFor(2)).toBe("b");
