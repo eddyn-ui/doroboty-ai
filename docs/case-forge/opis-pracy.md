@@ -1,85 +1,115 @@
 # Case Forge: „Od kogo zacząć?” — prototyp dla pracodawcy w DoRoboty.ai
 
-**Data:** 2026-11-22 · **Projekt:** [[doroboty-ai]] · **Kod:** `prototypes/doroboty-ai` (własna kopia repo), ekran `/#/app/kandydaci/przeglad`
+**Data:** 2026-11-22 · **Kod:** github.com/eddyn-ui/doroboty-ai, gałąź `prototyp-od-kogo-zaczac` · **Ekran:** `/#/app/kandydaci/przeglad`
 
-## 1. Wybór z discovery
+---
 
-|                             |                                                                                                                                                                                 |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Problem (O05)**           | „Sam wynik nie mówi mi, od kogo zacząć ani o co zapytać.”                                                                                                                       |
-| **Rozwiązanie**             | Przy każdej aplikacji trzy zdania: co kandydat potwierdza przykładem, co tylko deklaruje, czego brakuje (I1). Do tego dwie propozycje pytań do kandydata (I2).                  |
-| **Sygnał (obserwacja)**     | 4 950 aplikacji z rozmową: przewaga „continue” po rozmowie dla wyższego wyniku spadła z +38 pp (XI 2025) do +18 pp (V 2026) i +3 pp (VI 2026). Źródło: `data/applications.csv`. |
-| **Sygnał (deklaracja)**     | 3 z 4 rekruterów (F1–F4: Monika, Anna, Paweł) mówią, że wynik nie wystarcza do wyboru ani do pytań. Joanna chce sortować po wyniku.                                             |
-| **Sygnał (obserwacja, E1)** | Aplikacje z przykładem pracy: 41,0% „continue”, bez przykładu: 25,3%.                                                                                                           |
-| **Decyzja**                 | Supersprint, 2026-11-02 (`decisions/2026-11-02-prototyp-tydzien-3.md`).                                                                                                         |
+## 1. Jaki problem użytkownika rozwiązuję
 
-## 2. Dla kogo i co sprawdzam
+**Użytkownik:** pracodawca (rekruter), który dostał kilka aplikacji na jedną rolę i musi zdecydować, kogo zaprosić na rozmowę.
 
-- **Użytkownik:** pracodawca, czyli rekruter przeglądający aplikacje na jedną rolę.
-- **Zadanie w prototypie:** przy ogłoszeniu Lead AI (senior) i 8 aplikacjach wskaż 3 osoby, które zaprosisz na rozmowę jako pierwsze, i zapisz po jednym pytaniu do każdej.
-- **Co rekruter widzi jako wynik:** listę swoich trzech wyborów z pytaniami. Moderator widzi zapis próby: kogo wybrał, jakie pytania zadał, czy pytanie pochodzi z propozycji (wprost lub po zmianie), czy jest własne, i ile trwało zadanie.
-- **Hipoteza:** z trzema zdaniami i propozycjami pytań rekruter zada pytania o własną rolę, decyzje i rezultat kandydata, zamiast pytań ogólnych. Częściej też wskaże osoby, które mają przykład pracy.
+**Problem (potrzeba O05):** „Sam wynik nie mówi mi, od kogo zacząć ani o co zapytać.”
 
-## 3. Po czym poznam, że prototyp działa
+**Skąd wiem (discovery → problem):**
 
-Progi **zatwierdzone 2026-11-22, przed sesjami**. Nie zmieniamy ich po zobaczeniu wyników:
+| Typ        | Sygnał                                                                                                                                                           | Źródło                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| Obserwacja | Przewaga „continue” po rozmowie dla wyższego wyniku spadła z +38 pp (XI 2025) do +18 pp (V 2026) i +3 pp (VI 2026). Wynik przestał odróżniać dobrych kandydatów. | 4 950 aplikacji z rozmową, `applications.csv` |
+| Deklaracja | 3 z 4 rekruterów: wynik nie wystarcza do wyboru ani do pytań. 1 z 4 chce sortować po wyniku.                                                                     | Wywiady F1–F4                                 |
+| Obserwacja | Aplikacje z przykładem pracy: 41,0% „continue”, bez przykładu: 25,3%. Przykład pracy niesie informację, której wynik nie pokazuje.                               | Test E1 na danych                             |
+| Decyzja    | Supersprint 2026-11-02: O05 wybrana po PRES (remis 12 pkt z O03, O06). Pomysły I1 + I2.                                                                          | `decisions/2026-11-02-prototyp-tydzien-3.md`  |
 
-| Miara (z zapisu prób)                  | Działa, jeśli                                                                             | Nie działa, jeśli                                       |
-| -------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| Użycie propozycji w wersji B           | ≥ 5 z 8 rekruterów bierze co najmniej 1 pytanie z propozycji (wprost lub zmienione)       | ≤ 2 z 8                                                 |
-| Pytania o własną rolę/decyzję/rezultat | Odsetek w B wyższy niż w A o ≥ 20 pp, liczony osobno dla grup „A najpierw” i „B najpierw” | Brak różnicy lub różnica tylko w jednej kolejności      |
-| Koszt czasu                            | Czas w B ≤ 1,5 × czas w A                                                                 | B wyraźnie dłużej i rekruterzy mówią „za dużo czytania” |
-| Pomocniczo: kogo wskazuje              | W B więcej wskazań aplikacji z przykładem pracy (A, C, E, F w wersji A)                   | —                                                       |
+**Rozwiązanie (problem → prototyp):** przy każdej aplikacji, pod wynikiem:
 
-Uwaga: przy 5–8 osobach to sygnał jakościowy, nie dowód statystyczny. Prototyp nie dowodzi wpływu na ponowny zakup (30% → 60%). To sprawdzi dopiero E3 (90 dni, połowa firm z wskazówkami).
+- **I1 — trzy zdania:** co kandydat potwierdza przykładem, co tylko deklaruje, czego brakuje. Odpowiada na „od kogo zacząć”.
+- **I2 — dwa pytania do kandydata** z przyciskiem „Użyj pytania”. Odpowiada na „o co zapytać”.
 
-## 3a. Gdzie w projekcie i na jakich danych
+Żeby sprawdzić, czy to pomaga, ekran ma dwie wersje: **„Sam wynik”** (jak dziś) i **„Wynik i wskazówki”** (I1 + I2).
 
-**Co już jest w DoRoboty.ai (przegląd z agentem):**
+---
 
-| Element                                                                                                         | Co daje                                    | Czy użyte                                      |
-| --------------------------------------------------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------- |
-| `/#/app/kandydaci` (EMP-07): lista aplikacji pracodawcy z Match Score i podsumowaniem                           | Punkt wejścia rekrutera                    | Tak, tu jest przycisk „Od kogo zacząć? (test)” |
-| `/#/app/kandydaci/:id` (EMP-08): karta jednej aplikacji (odpowiedź, CV, historia, decyzje)                      | Naturalne miejsce na trzy zdania i pytania | Nie, uzasadnienie niżej                        |
-| Komponenty: `MatchScore`, `BackLink`, `Button`, `Checkbox`, `Textarea`, `Notice`, `ConfirmDialog`, panele 24 px | Spójny wygląd z resztą portalu             | Tak, bez nowych wariantów                      |
-| Dane przykładowe: `people.json`, `marketplace.json` (Anna, Marek, Karolina, Tomasz; 1 aplikacja u Karoliny)     | Gotowi użytkownicy i role                  | Użytkownik tak (Karolina), aplikacje nie       |
+## 2. Po czym poznam, że prototyp działa
 
-**Dlaczego nowy ekran, a nie karta aplikacji (EMP-08):** problem brzmi „od kogo zacząć”, a to decyzja o **kolejności wśród wielu aplikacji**, nie o jednej osobie. Na karcie pojedynczej aplikacji rekruter nie porówna kandydatów. Nowy ekran pozwala też przełączać wersję A/B bez zmiany działania reszty portalu.
+### 2a. Zadanie i wynik na ekranie (czy prototyp działa technicznie)
 
-**Dlaczego aplikacje z E2, a nie z danych przykładowych:** w danych przykładowych Karolina ma jedną aplikację (Marek), więc nie ma wyboru „trzech z ośmiu”. Osiem aplikacji z E2 (`pub-003513`, V 2026) ma dobrane wyniki i przykłady pracy (po 2 z każdej kombinacji: wynik ≥75 lub <75, z przykładem lub bez). Do tego są to te same karty, które dostaną rekruterzy w protokole E2, więc wyniki z prototypu da się porównać z planem. Użytkownik i uprawnienia pochodzą z danych przykładowych (Karolina, rola pracodawcy).
+**Zadanie rekrutera:** „Wskaż trzy osoby, które zaprosisz na rozmowę jako pierwsze, i zapisz, o co każdą zapytasz.”
 
-## 4. Co zbudowałam
+| #   | Krok                                                               | Co ma się pojawić                                                                                                                       |
+| --- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Uruchom `npm run dev`, otwórz http://127.0.0.1:3001                | Strona główna DoRoboty.ai                                                                                                               |
+| 2   | „Wybierz osobę” → **Karolina Wiśniewska** (pracodawca, BrightLabs) | Strefa pracodawcy, menu z „Kandydaci”                                                                                                   |
+| 3   | Kandydaci → **„Od kogo zacząć? (test)”**                           | Ekran z ogłoszeniem Lead AI (senior) i 8 kartami A–H, aktywna wersja „Sam wynik”                                                        |
+| 4   | Wpisz „Rekruter nr” 1                                              | Podpowiedź: „Rekruter 1 zaczyna od wersji »Sam wynik«”                                                                                  |
+| 5   | Zaznacz 3 osoby, wpisz przy każdej pytanie                         | Pod każdą zaznaczoną kartą pole „Twoje pytanie”, licznik „Wybrano 3 z 3: …”                                                             |
+| 6   | Spróbuj zaznaczyć czwartą osobę                                    | Komunikat: „Możesz wskazać tylko 3 osoby…”, nic się nie zaznacza                                                                        |
+| 7   | „Zapisz odpowiedź”                                                 | „Zapisano próbę…”, w „Zapisane próby (1)” widać osoby, pytania z etykietą „własne pytanie” i czas                                       |
+| 8   | Przełącz na **„Wynik i wskazówki”**                                | Te same osoby z literami D–K w innej kolejności. Na każdej karcie widać „Co wynika z aplikacji” (3 zdania) i „O co zapytać” (2 pytania) |
+| 9   | Kliknij „Użyj pytania” przy 3 osobach, jedno pytanie zmień         | Osoba zaznacza się sama, pytanie trafia do pola                                                                                         |
+| 10  | „Zapisz odpowiedź”                                                 | „Zapisane próby (2)”: etykiety „pytanie z propozycji” / „propozycja zmieniona”, licznik „pytania z propozycji: 3/3”                     |
+| 11  | „Pobierz wyniki (JSON)”                                            | Plik `doroboty-przeglad-aplikacji.json` z obiema próbami                                                                                |
+| 12  | Odśwież stronę                                                     | Zapisane próby nadal są                                                                                                                 |
 
-- **Nowy ekran „Od kogo zacząć?”** w strefie pracodawcy, dostępny przyciskiem „Od kogo zacząć? (test)” na liście Kandydaci.
-- **Przełącznik wersji:** „Sam wynik” (A) i „Wynik i wskazówki” (B). W B kandydaci mają inne litery (D–K) i inną kolejność, zgodnie z protokołem E2.
-- **Karta aplikacji:** wynik, odpowiedź, notatka, materiały. W B dochodzi blok „Co wynika z aplikacji” (trzy zdania z kolorowym znacznikiem) i „O co zapytać” (dwa pytania z przyciskiem „Użyj pytania”).
-- **Wybór:** pole „Zapraszam jako jedną z trzech pierwszych osób”, limit 3 z komunikatem, pole na pytanie.
-- **Zapis prób:** numer rekrutera, rotacja (nieparzyści zaczynają od A), czas, źródło pytania. Eksport do JSON i czyszczenie z potwierdzeniem.
-- **Design system:** Poster People: białe karty 24 px, czarny kontur, różowy przycisk główny, MatchScore, Notice, BackLink, Checkbox i Textarea z projektu.
+Scenariusz przeszedł 2026-11-22 agent w przeglądarce. Kroki 1–10 i 12 dały opisany wynik, a zawartość zapisu sprawdzono w localStorage. Krok 11 (pobranie pliku) nie był klikany.
 
-## 5. Scenariusz testu
+### 2b. Czy rozwiązanie pomaga rekruterom (sesje E2, 5–8 osób)
 
-1. Uruchom aplikację (`npm run dev` w `prototypes/doroboty-ai`), otwórz http://127.0.0.1:3001.
-2. „Wybierz osobę” → **Karolina Wiśniewska** (pracodawca, BrightLabs) → Kandydaci → „Od kogo zacząć? (test)”.
-3. Ustaw „Rekruter nr” (1–8). Podpowiedź mówi, od której wersji zacząć.
-4. Zadanie 1 w pierwszej wersji: 3 osoby + 3 pytania → „Zapisz odpowiedź”.
-5. Przełącz wersję, powtórz zadanie → „Zapisz odpowiedź”.
-6. Rozmowa: co pomogło, co przeszkadzało, czemu nie użył pytań.
-7. Po wszystkich sesjach: „Pobierz wyniki (JSON)” → policz miary z tabeli w sekcji 3.
+Progi **zatwierdzone 2026-11-22, przed sesjami.** Nie zmieniam ich po wynikach.
 
-Przejście scenariusza sprawdziłam 2026-11-22 w przeglądarce (rekruter 1, A potem B). Zapis i rozpoznanie źródła pytania działają.
+| Miara (z pliku JSON)                                 | Działa, jeśli                                                                | Nie działa, jeśli                                       |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Użycie propozycji w wersji B                         | ≥ 5 z 8 rekruterów bierze ≥ 1 pytanie z propozycji (wprost lub zmienione)    | ≤ 2 z 8                                                 |
+| Pytania o własną rolę / decyzję / rezultat kandydata | Odsetek w B wyższy niż w A o ≥ 20 pp, osobno dla „A najpierw” i „B najpierw” | Brak różnicy albo różnica tylko w jednej kolejności     |
+| Koszt czasu                                          | Czas w B ≤ 1,5 × czas w A                                                    | B wyraźnie dłużej i rekruterzy mówią „za dużo czytania” |
+| Pomocniczo                                           | W B więcej wskazań osób z przykładem pracy                                   | —                                                       |
 
-## 6. Przygotowane odpowiedzi AI (uczciwie)
+Przy 5–8 osobach to sygnał jakościowy, nie dowód statystyczny. Prototyp nie sprawdza wpływu na ponowny zakup (30% → 60% w 90 dni). Do tego potrzebny jest test E3.
 
-- Trzy zdania i dwa pytania przy każdej aplikacji **napisałam ręcznie** na podstawie tekstu aplikacji. Żaden model ich nie generuje, a ekran informuje o tym rekrutera.
-- Pytania pochodzą z `e2-materialy.md`, zdania z liczby elementów przykładu (reguła E1).
-- Wynik dopasowania pochodzi z danych case'u, zaokrąglony do pełnych procent.
-- Osiem aplikacji to zanonimizowane rekordy z ogłoszenia `pub-003513` (V 2026). Decyzje firm nie są pokazywane (są tylko w kluczu).
-- Nietestowane: czy model napisze takie zdania rzetelnie i bez halucynacji.
+---
 
-## 7. Ograniczenia
+## 3. Co działa naprawdę, a co jest symulacją
 
-- Dane zapisują się tylko w przeglądarce, na której prowadzisz sesję. Pobierz JSON po każdej sesji.
-- Ten sam rekruter widzi te same osoby dwa razy (efekt uczenia). Dlatego rotacja i liczenie osobno dla „A najpierw” i „B najpierw”.
-- Rozbieżność z E2 rev. 2: tam wersja B miała tylko pytania (I2). Prototyp pokazuje I1 + I2, zgodnie z decyzją z 2026-11-02. Jeśli chcesz testować samo I2, trzeba dodać trzeci tryb.
-- Testy przeglądarkowe Playwright nie były uruchomione (brak Chromium). Pozostałe kontrole (format, lint, typy, 34 testy jednostkowe, build, design system) przeszły.
+| Działa naprawdę (kod w przeglądarce)                                                               | Przygotowane / symulowane                                                                                                                                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Wybór osoby i rola pracodawcy (kandydatka Anna dostaje „Ten widok jest dostępny dla pracodawcy”)   | **Trzy zdania (I1) i dwa pytania (I2)** przy każdej aplikacji: **napisane ręcznie przeze mnie** z tekstu aplikacji. **Żaden model AI ich nie generuje i nie analizuje aplikacji.** Ekran mówi rekruterowi: „W tym prototypie zastępują wynik AI” |
+| Przełączanie wersji A/B, nowe litery i kolejność w B                                               | **8 aplikacji** to stały zestaw z E2 (zanonimizowane rekordy z ogłoszenia `pub-003513`, V 2026), wpisany w kod. Nie pochodzi z formularza aplikowania                                                                                            |
+| Limit 3 osób, wymagane pytanie przy każdej, komunikaty błędów                                      | **Match Score** to liczba z danych case'u (zaokrąglona), a nie wynik liczony przez model                                                                                                                                                         |
+| „Użyj pytania” i rozpoznanie, czy pytanie jest z propozycji, zmienione czy własne                  | Ogłoszenie Lead AI jest wpisane w ekran. Nie jest to oferta z listy ofert Karoliny                                                                                                                                                               |
+| Pomiar czasu, zapis prób w przeglądarce (localStorage), eksport JSON, czyszczenie z potwierdzeniem | Zapis działa tylko w tej przeglądarce. Nie ma serwera ani wspólnej bazy                                                                                                                                                                          |
+
+**Czego nie wiem:** czy prawdziwy model napisze takie zdania rzetelnie, bez zmyślania przykładów. Prototyp to sprawdza **wartość** wskazówek dla rekrutera, nie **jakość AI**.
+
+---
+
+## 4. Jak prototyp korzysta z projektu
+
+| Element DoRoboty.ai                                                                                                                                       | Jak użyty                                                                         |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Osoby i role z danych przykładowych (`people.json`)                                                                                                       | Karolina jako pracodawca. Strażnik roli `RequireRole` blokuje ekran dla kandydata |
+| Lista Kandydaci (`/#/app/kandydaci`)                                                                                                                      | Punkt wejścia: przycisk „Od kogo zacząć? (test)”                                  |
+| Komponenty design systemu Poster People: `MatchScore`, `BackLink`, `Button`, `Checkbox`, `Textarea`, `Input`, `ConfirmDialog`, panele, `prototype-notice` | Cały ekran, bez nowych wariantów. Własny CSS tylko na układ                       |
+| Routing (hash), Zod, wzorzec zapisu w localStorage                                                                                                        | Nowa trasa, walidacja zapisów, osobny klucz (dane produktu nietknięte)            |
+
+**Dlaczego nowy ekran, a nie karta aplikacji (`/#/app/kandydaci/:id`):** „od kogo zacząć” to wybór kolejności spośród wielu osób. Na karcie jednej aplikacji nie da się ich porównać.
+
+**Dlaczego aplikacje z E2, a nie z danych przykładowych:** Karolina ma w danych przykładowych jedną aplikację (Marek), więc nie ma czego porównywać. Osiem aplikacji z E2 ma dobrane wyniki i przykłady pracy (po 2 z każdej kombinacji: wynik ≥ 75 / < 75, z przykładem / bez). To też te same karty, które dostaną rekruterzy w E2.
+
+**Wcześniejsze funkcje na tej ścieżce nadal działają (sprawdzone 2026-11-22):**
+
+| Funkcja                                                                                                    | Wynik                                                       |
+| ---------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| Wybór osoby: Karolina, Anna                                                                                | ✅                                                          |
+| Kandydaci: lista, wyszukiwarka, pusty wynik „Brak aplikacji spełniających kryteria.”                       | ✅                                                          |
+| Karta aplikacji Marka: odpowiedź, CV, Match Score, historia                                                | ✅                                                          |
+| Decyzja rekrutacyjna „W przeglądzie” zapisuje się w historii                                               | ✅                                                          |
+| Kandydatka: „Moje aplikacje” bez przycisku testu                                                           | ✅                                                          |
+| Ustawienia → „Resetuj scenariusz” przywraca dane                                                           | ✅ (zapisanych prób testu nie kasuje, bo mają osobny klucz) |
+| Kontrole automatyczne: format, lint, typy, 34 testy jednostkowe (7 nowych), build, kontrola design systemu | ✅                                                          |
+| Testy przeglądarkowe Playwright                                                                            | ⚠️ nieuruchomione: brak przeglądarki Chromium na komputerze |
+
+---
+
+## 5. Ograniczenia
+
+- Ten sam rekruter widzi te same osoby dwa razy (efekt uczenia). Dlatego jest rotacja: nieparzyści zaczynają od A, parzyści od B. Wyniki liczę osobno dla obu grup.
+- Plan E2 rev. 2 testował w wersji B same pytania. Prototyp pokazuje zdania i pytania, zgodnie z decyzją z 2026-11-02.
+- Prototyp nie dotyka przejścia od szkicu do płatności (O09), gdzie leży największy zmierzony spadek zakupów.
