@@ -17,6 +17,7 @@ import {
 import { EmployerJobs, EmployerJobEditor, CompanyEditor } from "./employer";
 import { SettingsPage, PrivacyPage } from "./settings";
 import { CasePage } from "./case";
+import { ScreeningReview } from "@/features/screening-review/screening-review";
 function AppRoutes() {
   return (
     <Routes>
@@ -122,6 +123,14 @@ function AppRoutes() {
           element={
             <RequireRole role="employer">
               <ApplicationsPage employer />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="app/kandydaci/przeglad"
+          element={
+            <RequireRole role="employer">
+              <ScreeningReview />
             </RequireRole>
           }
         />

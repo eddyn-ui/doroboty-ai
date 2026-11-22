@@ -424,7 +424,17 @@ export function ApplicationsPage({ employer = false }: { employer?: boolean }) {
   );
   return (
     <>
-      <PageTitle>{employer ? "Kandydaci" : "Moje aplikacje"}</PageTitle>
+      <PageTitle
+        action={
+          employer ? (
+            <Link className={buttonVariants({ variant: "outline" })} to="/app/kandydaci/przeglad">
+              Od kogo zacząć? (test)
+            </Link>
+          ) : undefined
+        }
+      >
+        {employer ? "Kandydaci" : "Moje aplikacje"}
+      </PageTitle>
       {params.has("wyslano") && (
         <Notice>
           <CheckCircle2 className="inline size-5" /> Aplikacja została wysłana.
